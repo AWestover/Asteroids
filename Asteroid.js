@@ -1,5 +1,8 @@
 // The astroid class
 
+// Any asteroid with avgRadius less than this wil not split
+var criticalRadius = 25;
+
 function Asteroid(avgRadius, pos, vel) {
 	this.avgRadius = avgRadius;
 	this.pos = pos;
@@ -30,16 +33,26 @@ Asteroid.prototype.show = function() {
 
 Asteroid.prototype.update = function(dt) {
 	this.pos.add(p5.Vector.mult(this.vel, dt));
-	if (this.pos.x > 1.01*screen_dims[0]) {
-		this.pos.x = -0.01*screen_dims[0];
+	var wrappedxys = wrapXYs(this.pos.x, this.pos.y);
+  this.pos.x = wrappedxys[0];
+  this.pos.y = wrappedxys[1];
+}
+
+Asteroid.prototype.halfs = function(bullet) {
+	// Later make it split along the line the bullet is traveling in!
+
+	var ast1 = new Asteroid(this.avgRadius/2, this.pos, this.vel);
+	var ast2 = new Asteroid(this.avgRadius/2, this.pos, this.vel);
+	return [ast1, ast2];
+}
+
+function breakAsteroid(index) {
+	if (asteroids[index].avgRadius > criticalRadius) {
+		var twoNewHalfs =  asteroids[index].halfs();
+		asteroids[index] = twoNewHalfs[0];
+		asteroids.push(twoNewHalfs[1]);
 	}
-  if (this.pos.x < -0.01*screen_dims[0]) {
-		this.pos.x = 1.01*screen_dims[0];
-	}
-	if (this.pos.y > 1.01*screen_dims[1]) {
-		this.pos.y = -0.01*screen_dims[1];
-	}
-	if (this.pos.y < -0.01*screen_dims[1]) {
-		this.pos.y = 1.01*screen_dims[1];
+	else {
+		asteroids.pop(index);
 	}
 }

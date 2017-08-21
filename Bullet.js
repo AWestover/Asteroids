@@ -19,22 +19,17 @@ Bullet.prototype.show = function() {
 
 Bullet.prototype.update = function(dt) {
   this.pos.add(p5.Vector.mult(this.vel, dt));
-
-  if (this.pos.x > 1.01*screen_dims[0]) {
-		this.pos.x = -0.01*screen_dims[0];
-	}
-  if (this.pos.x < -0.01*screen_dims[0]) {
-		this.pos.x = 1.01*screen_dims[0];
-	}
-	if (this.pos.y > 1.01*screen_dims[1]) {
-		this.pos.y = -0.01*screen_dims[1];
-	}
-	if (this.pos.y < -0.01*screen_dims[1]) {
-		this.pos.y = 1.01*screen_dims[1];
-	}
-
+  var wrappedxys = wrapXYs(this.pos.x, this.pos.y);
+  this.pos.x = wrappedxys[0];
+  this.pos.y = wrappedxys[1];
 }
 
-Bullet.prototype.checkCollisions = function(all_astroids) {
-
+Bullet.prototype.checkCollisions = function(all_asteroids) {
+  var hit = false;
+  var asteroidHit = hitAsteroid(all_asteroids, this.pos, this.dims);
+  if  (asteroidHit != -1) {
+    breakAsteroid(asteroidHit);
+    hit = true;
+  }
+  return hit;
 }

@@ -17,25 +17,20 @@ function Ship(dims, pos, dt) {
 
   this.bulletSpeed = 40;
   this.bullets = [];
+
+  this.color = [0, 255, 0];
 };
 
 /*
 Ship design (rough)
-|\
-| \
-|  \
-|  /
-| /
-|/
-
+>
 var dims = createVector(center_x to right most x or left most x (1/2 max_width), \
 total_height/2, y center to top or bottom);
-
 var pos = createVector(center_x, center_y);
 */
 
 Ship.prototype.show = function() {
-  fill(255, 255, 255);
+  fill(this.color[0], this.color[1], this.color[2]);
   noStroke();
   this.bottom_pt = createVector(this.pos.x - this.dims.x, this.pos.y + this.dims.y);
   this.top_pt = createVector(this.pos.x - this.dims.x, this.pos.y - this.dims.y);
@@ -47,28 +42,29 @@ Ship.prototype.show = function() {
   resetMatrix();
 }
 
+Ship.prototype.checkHitAsteroid = function(all_asteroids) {
+  if (hitAsteroid(all_asteroids, this.pos, this.dims) != -1) {
+    this.color = [0, 0, 255];
+  }
+}
 
-Ship.prototype.update = function(dampening) {
+Ship.prototype.update = function(all_asteroids) {
   this.pos.add(p5.Vector.mult(this.vel, this.dt));
 
-  if (this.pos.x > 1.01*screen_dims[0]) {
-		this.pos.x = -0.01*screen_dims[0];
-	}
-  if (this.pos.x < -0.01*screen_dims[0]) {
-		this.pos.x = 1.01*screen_dims[0];
-	}
-	if (this.pos.y > 1.01*screen_dims[1]) {
-		this.pos.y = -0.01*screen_dims[1];
-	}
-	if (this.pos.y < -0.01*screen_dims[1]) {
-		this.pos.y = 1.01*screen_dims[1];
-	}
+  var wrappedxys = wrapXYs(this.pos.x, this.pos.y);
+  this.pos.x = wrappedxys[0];
+  this.pos.y = wrappedxys[1];
 
-  for (var i = 0; i < this.bullets.length; i++) {
+  for (var i = this.bullets.length-1; i >= 0; i--) {
     this.bullets[i].show();
     this.bullets[i].update(this.dt);
+    var killable = this.bullets[i].checkCollisions(all_asteroids);
+    if (killable) {
+      this.bullets.pop(i);
+    }
   }
 
+  this.checkHitAsteroid(all_asteroids);
 }
 
 Ship.prototype.accelerate = function() {
@@ -80,10 +76,10 @@ Ship.prototype.accelerate = function() {
 
 Ship.prototype.turn = function(direction) {
   if (direction == "LEFT") {
-    this.th += this.angSpeed * this.dt;
+    this.th -= this.angSpeed * this.dt;
   }
   else if (direction == "RIGHT") {
-    this.th -= this.angSpeed * this.dt;
+    this.th += this.angSpeed * this.dt;
   }
 }
 
