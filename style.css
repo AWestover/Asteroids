@@ -1,0 +1,39 @@
+/* Style for the website */
+body {
+    background-color: black;
+}
+
+* {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.controls {
+  width: 10%;
+  left: 5%;
+  bottom: 5%;
+  position: fixed;
+  align-items: center;
+}
+
+button {
+  margin: 0;
+  width: 50%;
+}
+
+button.LeftArrow {
+  float: left;
+}
+
+button.RightArrow {
+  float: right;
+}
+
+button.Thrust {
+  width: 100%;
+}
+
+button.Shoot {
+  width: 100%;
+}
