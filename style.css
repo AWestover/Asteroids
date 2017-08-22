@@ -10,7 +10,8 @@ body {
 }
 
 .controls {
-  width: 10%;
+  width: 30%;
+  height: 20%;
   left: 5%;
   bottom: 5%;
   position: fixed;
@@ -20,6 +21,8 @@ body {
 button {
   margin: 0;
   width: 50%;
+  height: 33.3%;
+  font-size: 150%;
 }
 
 button.LeftArrow {
