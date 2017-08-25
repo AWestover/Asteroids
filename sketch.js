@@ -17,7 +17,7 @@ var ship;
 var num_asteroids = 1;
 var asteroids;
 var pause = false;
-var debugMode = true;
+var debugMode = false;
 
 // A function that resets all parameters to default values
 // caled on start and restart of game
