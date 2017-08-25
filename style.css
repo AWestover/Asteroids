@@ -40,3 +40,13 @@ button.Thrust {
 button.Shoot {
   width: 100%;
 }
+
+div.PauseInfo {
+  width: 30%;
+  padding: 2%;
+  float: right;
+}
+
+button.Pause {
+  float: right;
+}

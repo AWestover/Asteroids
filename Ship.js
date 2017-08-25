@@ -50,17 +50,16 @@ Ship.prototype.checkHitAsteroid = function(all_asteroids) {
 
 Ship.prototype.update = function(all_asteroids) {
   this.pos.add(p5.Vector.mult(this.vel, this.dt));
-
-  var wrappedxys = wrapXYs(this.pos.x, this.pos.y);
-  this.pos.x = wrappedxys[0];
-  this.pos.y = wrappedxys[1];
+  this.pos = wrapXYs(this.pos.x, this.pos.y);
 
   for (var i = this.bullets.length-1; i >= 0; i--) {
     this.bullets[i].show();
     this.bullets[i].update(this.dt);
-    var killable = this.bullets[i].checkCollisions(all_asteroids);
+    var bulletUsed = this.bullets[i].checkCollisions(all_asteroids);
+    var bulletSpent = this.bullets[i].distanceTravelled > this.bullets[i].distanceTillDeath;
+    var killable = bulletUsed || bulletSpent;
     if (killable) {
-      this.bullets.pop(i);
+      this.bullets.splice(i, 1);
     }
   }
 
