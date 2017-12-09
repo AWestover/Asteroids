@@ -19,11 +19,10 @@ Asteroid.prototype.generateRandomVertices = function() {
 	this.vertexNoise = [];
 	for (var i = 0; i < num_vertices; i++) {
 		var cur_edge_th = i*(TWO_PI/num_vertices);
-		var noiseX = 0.6*this.avgRadius*random();
-		var noiseY = 0.6*this.avgRadius*random();
-		this.vertexNoise.push([noiseX, noiseY]);
-		var nextX = this.avgRadius*cos(cur_edge_th) + noiseX;
-		var nextY = this.avgRadius*sin(cur_edge_th) + noiseY;
+		var noise = 0.6*this.avgRadius*random();
+		this.vertexNoise.push(noise);
+		var nextX = (this.avgRadius+noise)*cos(cur_edge_th);
+		var nextY = (this.avgRadius+noise)*sin(cur_edge_th);
 		this.vertexCenterDeltas.push([nextX, nextY]);
 	}
 }
@@ -42,8 +41,8 @@ Asteroid.prototype.update = function(dt) {
 	this.pos = wrapXYs(this.pos.x, this.pos.y);
 	for (var i = 0; i < this.vertexCenterDeltas.length; i++) {
 		var cur_edge_th = i*(TWO_PI/this.vertexCenterDeltas.length);
-		var nextX = this.avgRadius*cos(cur_edge_th + this.th) + this.vertexNoise[i][0];
-		var nextY = this.avgRadius*sin(cur_edge_th + this.th) + this.vertexNoise[i][1];
+		var nextX = (this.avgRadius + this.vertexNoise[i])*cos(cur_edge_th + this.th);
+		var nextY = (this.avgRadius + this.vertexNoise[i])*sin(cur_edge_th + this.th);
 		this.vertexCenterDeltas[i] = [nextX, nextY];
 	}
 	this.th += this.angSpeed*dt;
